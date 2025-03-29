@@ -1,4 +1,4 @@
-# X-Ray Questionnaire
+# Radiology Turing Test
 
 This is a Flask-based web application designed for conducting surveys with integrated eye-tracking and mouse-tracking features.
 
