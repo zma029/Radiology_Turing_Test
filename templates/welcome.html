@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Survey Welcome Page">
+    <title>Welcome to the Survey</title>
+    <link rel="icon" href="{{ url_for('static', filename='icon/med.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/welcome.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/clock.css') }}">
+</head>
+
+<body>
+
+<!-- 引入钟表的 HTML -->
+{% include 'clock.html' %}
+
+<div id="welcome-container">
+    <div id="welcome-header" style="user-select: none;">
+        <h1>Welcome to <span class="highlight">Medical AI Survey</span></h1>
+        <p class="subtitle">Start your journey by entering your details below.</p>
+    </div>
+    <form id="welcome-form" action="/start-survey" method="POST">
+        <div class="input-group">
+            <label for="participant-name">Your Name</label>
+            <input type="text" id="participant-name" name="participant_name" placeholder="Enter your name" required>
+        </div>
+        <div class="input-group">
+            <label for="survey-type">Choose a Survey</label>
+            <select id="survey-type" name="survey_type" required>
+                <option value="" disabled selected>Select a survey</option>
+                <option value="A">Survey A</option>
+                <option value="B">Survey B</option>
+            </select>
+        </div>
+        <button type="submit" class="btn-primary">Start Calibration</button>
+    </form>
+</div>
+</body>
+
+</html>

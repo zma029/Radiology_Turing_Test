@@ -1,0 +1,127 @@
+/* apple-welcome.css */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #e3eaf9, #f9faff);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #333;
+    overflow: hidden;
+}
+
+#welcome-container {
+    position: relative;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px); /* 增加苹果风格模糊 */
+    border-radius: 16px;
+    padding: 40px 60px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    animation: fadeIn 1s ease-in-out; /* 动画效果 */
+
+    /* 调整位置 */
+    top: -30px; /* 向上移动 20px */
+}
+
+#end-container {
+    position: relative;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px); /* 增加苹果风格模糊 */
+    border-radius: 16px;
+    padding: 40px 60px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 450px;
+    width: 90%;
+    animation: fadeIn 1s ease-in-out; /* 动画效果 */
+
+    /* 调整位置 */
+    top: -50px; /* 向上移动 20px */
+}
+
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#welcome-header h1, .end-header h1 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+#welcome-header .highlight, .end-header .highlight {
+    color: #007aff;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0, 122, 255, 0.5);
+}
+
+.subtitle {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 24px;
+}
+
+.input-group {
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+.input-group label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+    margin-bottom: 4px;
+    display: block;
+}
+
+.input-group input, .input-group select {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    color: #333;
+    outline: none;
+    transition: all 0.3s;
+    box-sizing: border-box;
+}
+
+.input-group input:focus, .input-group select:focus {
+    border-color: #007aff;
+    box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.2);
+    background-color: #ffffff;
+}
+
+/* End Page Specific Styles */
+.end-container p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.end-buttons {
+    display: flex;
+    flex-direction: column; /* 垂直布局 */
+    gap: 15px; /* 按钮之间的间距 */
+    align-items: center; /* 水平居中子元素 */
+    text-align: center;
+    max-width: 80%; /* 按钮最大宽度 */
+    min-width: 300px; /* 按钮最小宽度 */
+    margin: 0 auto; /* 让整个 .end-buttons 居中 */
+}

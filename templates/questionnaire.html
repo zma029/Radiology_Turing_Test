@@ -1,0 +1,445 @@
+<h1 style="user-select: none;">X-ray Report Generation Survey</h1>
+<hr class="divider">
+
+<div class="image-container">
+    <img id="xray-image" class="xray-image" src="{{ url_for('static', filename=item['image']) }}" alt="X-ray Image"
+         loading="lazy">
+</div>
+
+<!-- Zoom Overlay -->
+<div id="zoom-overlay" class="zoom-overlay">
+    <img id="zoomed-image" src="{{ url_for('static', filename=item['image']) }}" alt="Zoomed X-ray Image">
+</div>
+
+
+<p class="image-title" style="user-select: none;">
+    <strong>Image name:</strong> <span id="image-name"> {{ item['name'] }} </span> &nbsp;
+    <strong style="color: #007aff;">(Current: <span id="current-image-index">0</span> of <span
+            id="total-image-count">0</span>)</strong>
+</p>
+
+
+<hr class="divider">
+
+
+<div class="report-container">
+    {% for i in range(2) %}
+        <div class="report-section">
+            <h2 class="report-title" style="user-select: none;">Report {{ i + 1 }}:</h2>
+            <div class="report-content">
+                <p id="report-{{ i + 1 }}-content">{{ item['reports'][i]|safe }}</p>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+
+<hr class="divider">
+
+
+<form id="survey-form">
+
+    {% if survey_type == 'A' %}
+        <h2 class="question-title">Which report would you prefer to use?</h2>
+        <div class="radio-buttons horizontal">
+            {% for option in ['Strongly Prefer 1', 'Somewhat Prefer 1', 'No Preference', 'Somewhat Prefer 2', 'Strongly Prefer 2'] %}
+                <label>
+                    <input type="radio" name="prefer" value="{{ option }}" required> {{ option }}
+                    {# {{ loop.index }} #}
+                </label>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <h2 class="question-title">Which report is AI-generated?</h2>
+    <div class="radio-buttons horizontal">
+        {% for option in ['Both are AI-generated', '1 is AI-generated', '2 is AI-generated'] %}
+            <label><input type="radio" name="whichAI" value="{{ option }}" required> {{ option }}</label>
+        {% endfor %}
+    </div>
+
+    <h2 class="question-title">How confident are you in your response to the prior question?</h2>
+    <div class="radio-buttons horizontal">
+        {% for option in ['Very Unconfident', 'Somewhat Unconfident', 'Neutral', 'Somewhat Confident', 'Very Confident'] %}
+            <label><input type="radio" name="confidence" value="{{ option }}" required> {{ option }}</label>
+        {% endfor %}
+    </div>
+
+    {% if survey_type == 'B' %}
+        <h2 class="question-title">Which report would you prefer to use?</h2>
+        <div class="radio-buttons horizontal">
+            {% for option in ['Strongly Prefer 1', 'Somewhat Prefer 1', 'No Preference', 'Somewhat Prefer 2', 'Strongly Prefer 2'] %}
+                <label>
+                    <input type="radio" name="prefer" value="{{ option }}" required> {{ option }}
+                </label>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <div style="text-align: center;">
+        <hr class="divider" style="max-width: 500px; width: 100%; margin-left: auto; margin-right: auto;">
+        <button type="button" id="submit-button" class="btn-primary"
+                style="max-width: 400px; width: 100%; margin-top: 0;">Save and Continue
+        </button>
+    </div>
+
+    <div id="pagination-container"></div>
+</form>
+
+
+<!-- 暂停按钮 -->
+<button class="pause-button" id="pause-button" style="display: none;">
+    <i class="fas fa-pause"></i> <!-- 使用 FontAwesome 的暂停图标 -->
+</button>
+
+<!-- 遮罩层 -->
+<div class="pause-overlay" id="pause-overlay">
+    <!-- 继续按钮 -->
+    <button class="resume-button" id="resume-button">
+        <i class="fas fa-play"></i>
+    </button>
+</div>
+
+
+<script>
+    // 定义全局变量
+    let image, overlay, zoomedImage;
+
+    document.addEventListener('DOMContentLoaded', () => {
+        image = document.getElementById('xray-image');
+        overlay = document.getElementById('zoom-overlay');
+        zoomedImage = document.getElementById('zoomed-image');
+
+        // Image Zoom Logic
+        image.addEventListener('click', () => {
+            overlay.classList.add('active');
+            const {naturalWidth, naturalHeight} = image;
+            const scale = Math.min(window.innerWidth * 0.8 / naturalWidth, window.innerHeight * 0.8 / naturalHeight, 1);
+            zoomedImage.style.width = `${naturalWidth * scale}px`;
+            zoomedImage.style.height = `${naturalHeight * scale}px`;
+        });
+
+        overlay.addEventListener('click', () => {
+            overlay.classList.remove('active');
+        });
+
+        // Initialize Pagination
+        const numOfImages = {{ num_of_images }};
+        document.getElementById('total-image-count').textContent = numOfImages
+
+        $('#pagination-container').pagination({
+            dataSource: Array.from({length: numOfImages}, (_, i) => i + 1),
+            pageSize: 1,
+            // showGoInput: true,
+            // showGoButton: true,
+            callback: (data, pagination) => {
+                console.log('Current page:', pagination.pageNumber);
+            }
+        }).css('pointer-events', 'none');
+
+        document.getElementById('submit-button').addEventListener('click', async () => {
+            const submitButton = document.getElementById('submit-button');
+
+            // 禁用按钮，防止重复点击
+            submitButton.disabled = true;
+
+
+            try {
+                // 获取当前页面的 HTML
+                const htmlContent = document.documentElement.outerHTML;
+
+                // 发送到后端
+                const response = await fetch("/generate-webpage", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        html: htmlContent,
+                        windowWidth: document.documentElement.scrollWidth,
+                        windowHeight: document.documentElement.scrollHeight,
+                        index: document.getElementById('current-image-index').textContent
+                    }),
+                });
+
+                // 处理后端响应
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log(`Screenshot generated: ${result.screenshot_url}`);
+                } else {
+                    console.log("Failed to generate screenshot.");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                console.log("An error occurred while generating the screenshot.");
+            }
+
+
+            {##}
+            {#try {#}
+            {#    // Capture a screenshot of the entire webpage using html2canvas#}
+            {#    const canvas = await html2canvas(document.documentElement, {#}
+            {#        useCORS: true, // 允许跨域资源捕获#}
+            {#        scale: 1, // 强制使用 1:1 像素比率#}
+            {#        windowWidth: document.documentElement.scrollWidth,#}
+            {#        windowHeight: document.documentElement.scrollHeight,#}
+            {#        scrollX: 0,#}
+            {#        scrollY: 0,#}
+            {#        x: 0,#}
+            {#        y: 0,#}
+            {#    });#}
+            {#    const base64Image = canvas.toDataURL('image/jpeg', 0.8).split(',')[1];#}
+            {##}
+            {#    // Send the screenshot data to the backend for heatmap generation#}
+            {#    const response = await fetch('/heat-map', {#}
+            {#        method: 'POST',#}
+            {#        headers: {'Content-Type': 'application/json'},#}
+            {#        body: JSON.stringify({#}
+            {#            image: base64Image,#}
+            {#            index: document.getElementById('current-image-index').textContent#}
+            {#        })#}
+            {#    })#}
+            {##}
+            {#    if (!response.ok) throw new Error('Failed to generate heatmap.');#}
+            {##}
+            {#    const result = await response.json();#}
+            {#    console.log(result);#}
+            {# } catch (error) {#}
+            {#    console.error('Screenshot capture error:', error);#}
+            {#    alert('An error occurred while capturing the screenshot.');#}
+            {# }#}
+
+            try {
+                const xrayImage = document.getElementById('xray-image');
+                const zoomed_image = document.getElementById('zoomed-image');
+                const imageNameElement = document.getElementById('image-name');
+                const currentIndexElement = document.getElementById('current-image-index');
+                const report1ContentElement = document.getElementById('report-1-content');
+                const report2ContentElement = document.getElementById('report-2-content');
+
+                // 创建一个 FormData 对象，收集所有表单数据
+                const form = document.getElementById('survey-form');
+                const formData = new FormData(form);
+                const jsonData = Object.fromEntries(formData);
+                jsonData.timestamp = Date.now();
+                jsonData.index = currentIndexElement.textContent;
+                jsonData.imageName = imageNameElement.textContent.trim();
+
+                // 使用 fetch API 发送 POST 请求
+                const saveResponse = await fetch('{{ url_for("submit") }}', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(jsonData)
+                });
+
+                // 处理服务器响应
+                if (saveResponse.ok) {
+                    const result = await saveResponse.json();
+                    // 滚动到页面顶部
+                    window.scrollTo({
+                        top: 0,
+                        left: 0,
+                        behavior: 'instant' // 瞬间滚动，无动画效果
+                    });
+
+                    if (result['status'] === 'finished') {
+                        {#alert('Thank you for participating. Will download survey results.');#}
+
+                        {#window.open("{{ url_for('manager') }}", "_blank");#}
+                        {#window.open("{{ url_for('end') }}", "_blank");#}
+                        window.location.href = "{{ url_for('end') }}";
+
+                        {#setTimeout(() => {#}
+                        {#const timestamp = new Date().toISOString().replace(/[-:.]/g, '').slice(0, 15); // 生成时间戳#}
+                        {#const filename = `Survey_${timestamp}.zip`; // 拼接动态文件名#}
+                        {#    fetch('/download_results', {#}
+                        {#        method: 'POST',#}
+                        {#    })#}
+                        {#        .then(response => {#}
+                        {#            if (!response.ok) {#}
+                        {#                throw new Error('Network response was not ok');#}
+                        {#            }#}
+                        {#            return response.blob(); // 将返回的文件作为 blob 处理#}
+                        {#        })#}
+                        {#        .then(blob => {#}
+                        {#            const url = window.URL.createObjectURL(blob);#}
+                        {#            const a = document.createElement('a');#}
+                        {#            a.style.display = 'none';#}
+                        {#            a.href = url;#}
+                        {#            a.download = {{ result_filename }}; // 使用动态文件名#}
+                        {#            document.body.appendChild(a);#}
+                        {#            a.click();#}
+                        {#            window.URL.revokeObjectURL(url);#}
+                        {#        })#}
+                        {#        .catch(error => {#}
+                        {#            console.error('There was a problem with the download:', error);#}
+                        {#        });#}
+                        {# }, 3000); #}
+                        {#// 3秒后打印#}
+
+                    } else {
+                        if (result['status'] === 'almost_finished') {
+                            // 获取按钮元素
+                            document.getElementById("submit-button").innerText = "Finish the Survey";
+                        }
+
+                        // 成功保存，翻到下一页
+                        xrayImage.src = '/static/' + result['image']
+                        imageNameElement.textContent = result['name']
+                        currentIndexElement.textContent = result['index'];
+                        report1ContentElement.innerHTML = result['reports'][0];
+                        report2ContentElement.innerHTML = result['reports'][1];
+                        zoomed_image.src = '/static/' + result['image']
+                        setEqualHeight();
+                        // 重置表单
+                        form.reset();
+                        $('#pagination-container').pagination(result['index'])
+                    }
+
+
+                } else {
+                    alert('Form submission failed. Please try again.');
+                    console.error('Error:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error during form submission:', error);
+                alert('An error occurred while submitting the form.');
+                alert(error)
+            } finally {
+                // 恢复按钮的可点击状态
+                submitButton.disabled = false;
+            }
+        });
+    });
+
+    function setEqualHeight() {
+        const report1 = document.querySelector('.report-section:nth-child(1) .report-content');
+        const report2 = document.querySelector('.report-section:nth-child(2) .report-content');
+
+        // 重置高度，避免重复计算错误
+        report1.style.height = 'auto';
+        report2.style.height = 'auto';
+
+        // 获取两个内容的最大高度
+        const maxHeight = Math.max(report1.offsetHeight, report2.offsetHeight);
+
+        // 设置两个内容为相同的高度
+        report1.style.height = `${maxHeight}px`;
+        report2.style.height = `${maxHeight}px`;
+    }
+
+    // 页面加载和窗口大小变化时执行
+    window.addEventListener('load', setEqualHeight);
+    window.addEventListener('resize', setEqualHeight);
+
+    let mouseTrackingPaused = false; // 用于标记鼠标追踪是否暂停
+    let lastExecutionTime_mouse = 0; // 记录上次执行时间
+
+    const throttleInterval_mouse = {{ interval }}; // 设置触发频率为 100 毫秒（即 10 次/秒）
+
+    document.addEventListener("mousemove", (event) => {
+        if (mouseTrackingPaused) return; // 如果暂停追踪，直接返回
+
+        const currentTime = Date.now();
+        if (currentTime - lastExecutionTime_mouse < throttleInterval_mouse) {
+            return;
+        }
+        lastExecutionTime_mouse = currentTime;
+
+        const isActive = overlay.classList.contains('active');
+
+        let mappedPoint;
+
+        if (isActive) {
+            // 获取展开图片的最新位置，获取图片的位置和尺寸
+            const rect_zi = zoomedImage.getBoundingClientRect();
+            const rect_i_abs = getAbsoluteBoundingClientRect(image);
+
+            try {
+                mappedPoint = mapPointToRect(event.clientX, event.clientY, rect_zi, rect_i_abs);
+                console.log("Mapped Point:", mappedPoint);
+            } catch (error) {
+                if (error instanceof OutOfBoundsError) {
+                    console.error("OutOfBoundsError:", error.message);
+                    return; // 直接退出函数，不运行后续代码
+                } else {
+                    console.error("Unexpected error:", error.message);
+                    return; // Exit for any other unexpected error
+                }
+            }
+        } else {
+            // Default mapping when overlay is not active
+            mappedPoint = {x: event.clientX, y: event.clientY + window.scrollY};
+        }
+
+        console.log("Mouse Position:", mappedPoint);
+
+        // 发送鼠标位置到后端
+        fetch("/mouse-position", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                x: mappedPoint.x,
+                y: mappedPoint.y,
+                time: Date.now(),
+                index: document.getElementById('current-image-index').textContent
+            })
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log("Server response:", data);
+            })
+            .catch((error) => {
+                console.error("Error sending mouse position:", error);
+            });
+    });
+
+    const pauseButton = document.getElementById("pause-button");
+    const resumeButton = document.getElementById("resume-button");
+    const pauseOverlay = document.getElementById("pause-overlay");
+
+    // Function to send API request
+    async function sendStatusUpdate(action) {
+        try {
+            const response = await fetch("/update_status", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({"action": action, "time": Date.now()})
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Error:", errorData.error);
+                return;
+            }
+
+            const data = await response.json();
+            console.log("Server response:", data);
+        } catch (error) {
+            console.error("Error sending status update:", error);
+        }
+    }
+
+    // Pause button click event
+    pauseButton.addEventListener("click", () => {
+        pauseOverlay.classList.add("active");
+        pauseButton.style.display = "none"; // 隐藏暂停按钮
+        sendStatusUpdate("pause"); // Send pause action to backend
+        webgazer.pause(); // 暂停眼动追踪
+        mouseTrackingPaused = true; // 设置鼠标追踪暂停状态
+    });
+
+    // Resume button click event
+    resumeButton.addEventListener("click", () => {
+        pauseOverlay.classList.remove("active");
+        pauseButton.style.display = "flex"; // 恢复暂停按钮显示
+        sendStatusUpdate("resume"); // Send resume action to backend
+        webgazer.resume(); // 恢复眼动追踪
+        mouseTrackingPaused = false; // 恢复鼠标追踪
+    });
+
+</script>

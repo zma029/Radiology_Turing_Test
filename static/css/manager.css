@@ -1,0 +1,285 @@
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to bottom, #f6f8fa, #e9ecef); /* 柔和渐变背景 */
+    color: #333;
+    min-height: 100vh; /* 确保内容至少覆盖整个视窗高度 */
+}
+
+
+.container {
+    position: relative;
+    max-width: 1200px; /* 限制容器宽度 */
+    /*margin: 50px auto; !* 顶部和底部留白 *!*/
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px); /* 增加苹果风格模糊 */
+    padding: 20px;
+    border-radius: 16px; /* 圆角 */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); /* 柔和阴影 */
+    /*animation: fadeIn 1s ease-in-out; !* 动画效果 *!*/
+    margin-left: auto;
+    margin-right: auto;
+    top: 50px; /* 向上移动 20px */
+}
+
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+h1 {
+    font-size: 28px;
+    color: #007aff; /* 苹果蓝 */
+    margin: 0; /* 移除默认外边距 */
+    text-align: center;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* 增加标题层次感 */
+}
+
+
+.options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.options a {
+    font-size: 15px;
+    color: #007aff;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.options a:hover {
+    background-color: #007aff;
+    color: white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+
+.file-list {
+    list-style: none;
+    padding: 0;
+}
+
+.file-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: white;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.file-list li:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.file-list a {
+    text-decoration: none;
+    color: #007aff;
+    font-size: 17px;
+}
+
+.file-list a:hover {
+    text-decoration: underline;
+}
+
+.file-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* 自适应宽度 */
+    gap: 20px;
+    padding: 10px;
+    background: linear-gradient(to bottom, #f9f9f9, #e8e8e8); /* 轻微渐变 */
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06); /* 柔和阴影 */
+
+    /* 设置最小高度以确保有两行 */
+    min-height: calc((160px + 40px) * 2); /* 180px 是卡片高度，20px 是 gap */
+}
+
+.file-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: linear-gradient(to bottom, #ffffff, #f7f8fa); /* 精致渐变背景 */
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* 卡片阴影 */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    cursor: pointer;
+    text-decoration: none; /* 去掉默认链接样式 */
+    color: #212529; /* 默认文字颜色 */
+    height: 160px; /* 确保高度一致 */
+}
+
+.file-card .file-text {
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 8px;
+    text-align: center;
+    display: -webkit-box; /* 必须使用 */
+    -webkit-line-clamp: 2; /* 限制为两行 */
+    -webkit-box-orient: vertical; /* 设置为垂直方向 */
+    overflow: hidden; /* 超出隐藏 */
+    text-overflow: ellipsis; /* 超出显示省略号 */
+    word-wrap: break-word; /* 自动换行，兼容长单词 */
+    hyphens: auto; /* 如果支持，添加连字符换行 */
+    max-width: 90%; /* 限制宽度，避免影响布局 */
+    line-height: 1.5; /* 设置适中的行高，增强可读性 */
+    white-space: normal; /* 允许正常换行 */
+}
+
+.file-card:hover {
+    transform: scale(1.08); /* 放大效果 */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); /* 更明显的悬停阴影 */
+    background: linear-gradient(to bottom, #f7f8fa, #eef0f3); /* 悬停时的背景渐变 */
+}
+
+.file-card .file-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    color: #6c757d; /* 默认图标颜色 */
+    transition: color 0.3s ease;
+}
+
+.file-card:hover .file-icon {
+    color: #007aff; /* 悬停时图标变蓝 */
+}
+
+.file-card .file-text {
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 8px;
+    transition: color 0.3s ease;
+    text-align: center;
+    word-break: break-word; /* 长文字自动换行 */
+}
+
+.file-card:hover .file-text {
+    text-decoration: underline; /* 悬停时加下划线 */
+    color: #007aff; /* 悬停时文字变蓝 */
+}
+
+.header-container {
+    display: flex;
+    align-items: center; /* 垂直居中对齐 */
+    justify-content: space-between; /* 左右分布 */
+    padding: 20px 0;
+    gap: 10px; /* 内容之间的间距 */
+    position: relative; /* 确保布局正确 */
+}
+
+.left-action {
+    min-width: 100px; /* 保留固定空间，即使没有 Back 按钮 */
+    text-align: left; /* 对齐到左侧 */
+}
+
+.header-title {
+    flex-grow: 1; /* 让标题占据中间区域 */
+    font-size: 28px;
+    color: #007aff; /* 苹果蓝 */
+    margin: 0; /* 去掉默认外边距 */
+    text-align: center; /* 标题居中 */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* 增加标题层次感 */
+}
+
+
+.download-survey {
+    text-align: right; /* 对齐到右侧 */
+}
+
+.download-survey .btn-primary {
+    text-decoration: none;
+    color: white;
+    background: linear-gradient(90deg, #007aff, #005ecb);
+    padding: 8px 16px; /* 调整内边距以减小按钮大小 */
+    border-radius: 6px; /* 缩小圆角半径 */
+    font-size: 14px; /* 调整字体大小 */
+    text-align: center;
+    display: inline-block;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease; /* 增加缩放动画 */
+    box-shadow: 0 4px 8px rgba(0, 122, 255, 0.3);
+}
+
+.download-survey .btn-primary:hover {
+    background: linear-gradient(90deg, #005ecb, #003fa3);
+    box-shadow: 0 6px 12px rgba(0, 122, 255, 0.4);
+    transform: scale(1.05); /* 鼠标悬停时微小放大效果 */
+}
+
+.download-survey .btn-primary:active {
+    background-color: #003f80;
+    box-shadow: 0 2px 6px rgba(0, 122, 255, 0.4);
+    transform: scale(0.95); /* 按下时微小缩小效果 */
+}
+
+.download-survey .btn-primary i {
+    margin-right: 6px; /* 图标与文字之间的间距 */
+    font-size: 12px; /* 调整图标大小 */
+}
+
+
+.back-button {
+    display: inline-block;
+    font-size: 14px;
+    color: #007aff; /* 苹果蓝 */
+    text-decoration: none;
+    padding: 6px 12px;
+    background: white;
+    border: 1px solid #007aff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.back-button:hover {
+    background-color: #007aff;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+/*.back-button {*/
+/*    display: inline-block;*/
+/*    font-size: 14px; !* 字体大小 *!*/
+/*    color: #007aff; !* 苹果蓝 *!*/
+/*    text-decoration: none; !* 去掉下划线 *!*/
+/*    margin-bottom: 20px;*/
+/*    padding: 6px 12px; !* 添加内边距，增加点击区域 *!*/
+/*    background: white; !* 按钮背景 *!*/
+/*    border: 1px solid #007aff; !* 边框颜色与文字一致 *!*/
+/*    border-radius: 8px; !* 圆角按钮 *!*/
+/*    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); !* 按钮阴影 *!*/
+/*    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease; !* 交互过渡 *!*/
+/*    cursor: pointer; !* 鼠标变为手型 *!*/
+/*}*/
+
+/*.back-button:hover {*/
+/*    background-color: #007aff; !* 悬停时背景变为苹果蓝 *!*/
+/*    color: white; !* 悬停时文字颜色变白 *!*/
+/*    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); !* 悬停时阴影增强 *!*/
+/*    text-decoration: none; !* 保持无下划线 *!*/
+/*}*/
+
+.back-button:active {
+    background-color: #005bb5; /* 按下时背景颜色更深 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 按下时阴影缩小 */
+}

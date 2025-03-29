@@ -1,0 +1,264 @@
+.calibration-container {
+    position: fixed;
+    inset: 0; /* Fullscreen */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    background-color: rgba(255, 255, 255, 1);
+    z-index: 100;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.calibration-point {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: #007aff;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.calibration-point:hover {
+    background-color: #005ecb;
+    transform: scale(1.2);
+}
+
+/*说明部分的格式*/
+.calibration-instruction {
+    position: fixed;
+    left: 50%;
+    top: 45%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    padding: 40px 60px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 600px;
+    text-align: center;
+    z-index: 10000;
+    hyphens: auto; /* 自动添加连字符进行断行 */
+    animation: fadeIn 1s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9); /* 保持居中并缩小 */
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1); /* 保持居中并恢复大小 */
+    }
+}
+
+.calibration-instruction .highlight {
+    color: #007aff;
+    font-weight: 700;
+    text-shadow: 0 1px 2px rgba(0, 122, 255, 0.5);
+}
+
+.calibration-instruction h1 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.calibration-instruction h2 {
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.calibration-instruction .subtitle {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 24px;
+    hyphens: auto; /* 自动添加连字符进行断行 */
+    word-wrap: break-word; /* 允许长单词断行 */
+    overflow-wrap: break-word; /* 备用方案，增强兼容性 */
+    text-align: left; /* 确保文本左对齐，便于阅读 */
+    line-height: 1.5;
+}
+
+.calibration-instruction i {
+    margin-right: 3px;
+    color: #007aff;
+    display: inline-block;
+    width: 20px;
+    text-align: center;
+}
+
+.calibration-instruction ol {
+    text-align: left;
+    margin-bottom: 12px;
+    line-height: 1.5;
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+    padding-inline-start: 15px;
+}
+
+.calibration-instruction li {
+    text-align: left;
+    margin-bottom: 12px;
+    line-height: 1.5;
+    font-size: 14px;
+    font-weight: 500;
+    color: #555;
+    padding-inline-start: 8px;
+}
+
+.calibration-instruction li strong {
+    padding-left: 3px;
+    color: #007aff;
+    margin-right: 5px;
+}
+
+
+/*眼动追踪相关*/
+#webgazerVideoContainer {
+    z-index: 120;
+    position: fixed;
+    top: 16px; /* 稍微调整位置以避免完全贴边 */
+    left: 10px;
+    display: block;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); /* 添加柔和的阴影效果 */
+    background-color: #fff; /* 背景颜色 */
+    overflow: hidden; /* 防止内部元素溢出 */
+    border: 1px solid #ccc; /* 细边框增加细节 */
+}
+
+#webgazerFaceFeedbackBox {
+    border-radius: 12px; /* 添加圆角 */
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4); /* 半透明黑色背景 */
+    z-index: 999; /* 确保遮罩层在校准层和校准容器下方 */
+}
+
+
+#close-instruction {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #007aff; /* 苹果蓝 */
+    color: white;
+    border: none;
+    border-radius: 8px; /* 更圆的边角 */
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 细腻阴影 */
+}
+
+#help-button {
+    position: fixed;
+    width: 120px;
+    top: 0;
+    right: 20px;
+    padding: 10px 20px;
+    display: none; /* 默认隐藏 */
+    background-color: #007aff; /* 苹果蓝 */
+    color: white;
+    border: none;
+    border-radius: 8px; /* 更圆的边角 */
+    cursor: pointer;
+    z-index: 200;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 细腻阴影 */
+}
+
+#record-button {
+    position: fixed;
+    width: 120px;
+    top: 0;
+    right: 145px;
+    padding: 10px 20px;
+    display: none; /* 默认隐藏 */
+    background-color: #007aff; /* 苹果蓝 */
+    color: white;
+    border: none;
+    border-radius: 8px; /* 更圆的边角 */
+    cursor: pointer;
+    z-index: 200;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 细腻阴影 */
+}
+
+
+#close-instruction:hover, #help-button:hover {
+    background-color: #0063e5; /* 悬停时颜色变深 */
+}
+
+
+/* WebGazer Gaze Dot Style */
+#webgazerGazeDot {
+    display: block !important;
+    position: fixed !important;
+    z-index: 99999 !important;
+    width: 20px !important;
+    height: 20px !important;
+    background: radial-gradient(circle, rgba(255, 69, 58, 0.6) 0%, rgba(255, 102, 102, 0.4) 60%, rgba(255, 153, 153, 0.2) 100%) !important;
+    border-radius: 50% !important;
+    box-shadow: 0 0 24px rgba(255, 69, 58, 0.5) !important;
+    opacity: 0.9 !important;
+    transition: transform 0.1s ease-out, opacity 0.2s ease-out !important;
+}
+
+
+/* Overlay and Fullscreen Image Popup */
+.overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 关闭按钮样式 */
+.close-button {
+    position: absolute;
+    top: 20px;
+    right: 350px;
+    font-size: 30px;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* 图片样式 */
+.heatmap-img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* User Info 样式 */
+#user-info {
+    position: fixed;
+    top: 30px; /* 顶部 50% */
+    transform: translateY(-50%); /* 向上平移一半高度，垂直居中 */
+    right: 290px; /* 与 Record 按钮的水平间距 */
+    display: flex;
+    align-items: center; /* 水平居中 */
+    gap: 10px; /* Welcome 和 Survey 信息的间距 */
+    z-index: 200;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Welcome 和 Survey 的样式 */
+.welcome-text {
+    color: #333;
+}
+.separator {
+    color: #666;
+}

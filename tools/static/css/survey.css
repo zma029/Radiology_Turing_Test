@@ -1,0 +1,567 @@
+/* Apple Style Base */
+body {
+    margin: 0 auto;
+    max-width: 1000px;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #f4f4f9; /* 轻柔背景色 */
+    color: #1c1c1e;
+    overflow: hidden;
+}
+
+h1 {
+    text-align: center;
+    color: #1c1c1e;
+    font-weight: 600;
+}
+
+/* Report Container and Section */
+.report-container {
+    display: block;
+    width: 100%;
+    max-width: 1200px;
+    margin: 20px auto;
+    text-align: center;
+}
+
+.report-section {
+    display: inline-block;
+    width: 47%;
+    vertical-align: top;
+    margin: 0 1%;
+}
+
+.report-title,
+.question-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+    margin: 20px 0;
+    padding-left: 10px;
+    text-align: left;
+}
+
+/* Report Content */
+.report-content {
+    margin: 10px auto;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+    color: #444;
+    text-align: left;
+}
+
+.report-content p {
+    margin-bottom: 0;
+}
+
+
+/* Image Styles */
+.image-container {
+    text-align: center;
+    margin: 20px 0;
+}
+
+/* 专用于 X-ray 图像的样式 */
+.xray-image {
+    width: 400px;
+    height: auto;
+    border-radius: 12px;
+    cursor: zoom-in;
+    transition: transform 0.3s ease;
+}
+
+
+.zoom-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 210;
+}
+
+.zoom-overlay img {
+    border-radius: 12px;
+    cursor: zoom-out;
+    max-width: 80vw;
+    max-height: 80vh;
+}
+
+.zoom-overlay.active {
+    visibility: visible;
+    opacity: 1;
+}
+
+/*!* 提交按钮样式 *!*/
+/*.input-button {*/
+/*    display: block;*/
+/*    width: 300px;*/
+/*    margin: 40px auto 20px;*/
+/*    padding: 10px 20px;*/
+/*    border-radius: 12px;*/
+/*    border: none;*/
+/*    background-color: #007aff;*/
+/*    color: #fff;*/
+/*    font-size: 16px;*/
+/*    font-weight: 600;*/
+/*    cursor: pointer;*/
+/*    transition: background-color 0.2s ease;*/
+/*}*/
+
+/*.input-button:hover {*/
+/*    background-color: #0056d2;*/
+/*}*/
+
+/*#survey-form:invalid .input-button {*/
+/*    background-color: #d1d1d6;*/
+/*    cursor: not-allowed;*/
+/*    opacity: 0.6;*/
+/*}*/
+
+/* Radio Buttons */
+.radio-buttons.horizontal {
+    text-align: center;
+}
+
+/* 标签样式，使用 inline-block 实现水平排列 */
+.radio-buttons.horizontal label {
+    display: inline-block;
+    margin: 0 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: #ffffff;
+    border: 1px solid #d1d1d6;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    min-width: 80px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.radio-buttons.horizontal label:hover {
+    background-color: #f0f0f5;
+}
+
+.radio-buttons input[type="radio"]:checked + label {
+    font-weight: bold;
+    color: #007aff;
+}
+
+.radio-buttons.horizontal:after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+/* Dropdown */
+select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1px solid #d1d1d6;
+    background: #ffffff;
+}
+
+/* Pagination */
+#pagination-container {
+    display: inline-block;
+    width: 100%;
+    max-width: 800px;
+    overflow-x: hidden;
+    text-align: center;
+    padding: 5px 0;
+}
+
+/* 覆盖 pagination.js 的默认样式 */
+.paginationjs {
+    display: block;
+    padding-left: 10rem;
+}
+
+/* 分页按钮容器和省略号 */
+.paginationjs-pages,
+.paginationjs-ellipsis,
+.paginationjs-go-input,
+.paginationjs-go-button {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* 分页按钮样式 */
+.paginationjs-page,
+.paginationjs-prev,
+.paginationjs-next {
+    display: inline-block;
+    margin: 0 3px;
+    padding: 4px 8px;
+    min-width: 20px;
+    font-size: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    color: #007aff;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.paginationjs-page.active {
+    font-weight: 500;
+    background-color: #007aff;
+    color: #fff;
+    box-shadow: none; /* 去除阴影效果 */
+}
+
+button:disabled,
+.paginationjs-prev[disabled],
+.paginationjs-next[disabled],
+.paginationjs-ellipsis.disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+
+.paginationjs-page:hover,
+.paginationjs-prev:hover,
+.paginationjs-next:hover {
+    background-color: #f0f0f5;
+    transform: translateY(-1px);
+}
+
+/* 跳转输入框样式 */
+.paginationjs-go-input .J-paginationjs-go-pagenumber {
+    width: 50px;
+    padding: 4px;
+    margin: 0 3px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    color: #333;
+    font-size: 12px;
+    text-align: center;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.paginationjs-go-input .J-paginationjs-go-pagenumber:focus {
+    border-color: #007aff;
+}
+
+.paginationjs-go-button .J-paginationjs-go-button {
+    padding: 4px 10px;
+    margin-left: 3px;
+    border: 1px solid #007aff;
+    border-radius: 5px;
+    background-color: #007aff;
+    color: #fff;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.paginationjs-go-button .J-paginationjs-go-button:hover {
+    background-color: #0056d2;
+    transform: translateY(-1px);
+}
+
+/* 禁用跳转按钮样式 */
+.paginationjs-go-button .J-paginationjs-go-button:disabled {
+    background-color: #e0e0e0;
+    border-color: #e0e0e0;
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* Image Title */
+.image-title {
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    text-align: center;
+    margin: 20px 0;
+}
+
+/* Divider */
+.divider {
+    border: none;
+    height: 1px;
+    background-color: #d1d1d6;
+    margin: 20px 0;
+    opacity: 0.6;
+}
+
+
+
+
+/*!* 暂停按钮样式 *!*/
+/*.pause-button {*/
+/*    position: fixed;*/
+/*    right: 20px;*/
+/*    top: 50%;*/
+/*    transform: translateY(-50%); !* 保证按钮垂直居中 *!*/
+/*    width: 60px;*/
+/*    height: 60px;*/
+/*    background: linear-gradient(135deg, #007aff, #005ecb); !* 苹果蓝渐变 *!*/
+/*    border: none;*/
+/*    color: white;*/
+/*    border-radius: 50%;*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*    font-size: 24px;*/
+/*    font-weight: bold;*/
+/*    cursor: pointer;*/
+/*    transition: all 0.3s ease;*/
+/*    box-shadow: 0 6px 12px rgba(0, 122, 255, 0.3), inset 0 -1px 3px rgba(255, 255, 255, 0.6);*/
+/*    z-index: 1000;*/
+/*    user-select: none;*/
+/*}*/
+
+/*!* 使用 FontAwesome 图标替代文字 *!*/
+/*.pause-button i {*/
+/*    font-size: 20px; !* 调整图标大小 *!*/
+/*    color: white;*/
+/*    line-height: 1; !* 修正对齐 *!*/
+/*}*/
+
+/*!* 悬浮时的特效 *!*/
+/*.pause-button:hover {*/
+/*    background: linear-gradient(135deg, #005ecb, #0a84ff); !* 提升对比的渐变色 *!*/
+/*    transform: translateY(-50%) scale(1.1); !* 微放大但不偏移 *!*/
+/*    filter: brightness(1.1); !* 增加整体亮度 *!*/
+/*}*/
+
+/*!* 点击时的特效 *!*/
+/*.pause-button:active {*/
+/*    transform: translateY(-50%) scale(0.95);*/
+/*    box-shadow: 0 4px 8px rgba(0, 122, 255, 0.4), inset 0 -1px 2px rgba(0, 0, 0, 0.2);*/
+/*}*/
+
+/*!* 小屏幕优化 *!*/
+/*@media (max-width: 768px) {*/
+/*    .pause-button {*/
+/*        width: 50px;*/
+/*        height: 50px;*/
+/*        font-size: 20px;*/
+/*        right: 15px;*/
+/*    }*/
+
+/*    .pause-button i {*/
+/*        font-size: 18px; !* 缩小图标尺寸 *!*/
+/*    }*/
+/*}*/
+
+
+/*!* 遮罩层样式 *!*/
+/*.pause-overlay {*/
+/*    display: none;*/
+/*    position: fixed;*/
+/*    top: 0;*/
+/*    left: 0;*/
+/*    width: 100%;*/
+/*    height: 100%;*/
+/*    background-color: rgba(0, 0, 0, 0.5); !* 半透明黑色背景 *!*/
+/*    z-index: 999;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*    opacity: 0;*/
+/*    transition: opacity 0.3s ease;*/
+/*}*/
+
+/*.pause-overlay.active {*/
+/*    display: flex;*/
+/*    opacity: 1;*/
+/*}*/
+
+/*!* 中间内容容器 *!*/
+/*.pause-content {*/
+/*    text-align: center;*/
+/*    color: white;*/
+/*    font-size: 22px;*/
+/*    font-weight: 500;*/
+/*    font-family: "SF Pro Display", "Helvetica Neue", Arial, sans-serif;*/
+/*    background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.1));*/
+/*    padding: 30px 50px;*/
+/*    border-radius: 20px;*/
+/*    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25), inset 0 1px 4px rgba(255, 255, 255, 0.1);*/
+/*    backdrop-filter: blur(15px); !* 添加玻璃模糊效果 *!*/
+/*    user-select: none;*/
+/*}*/
+
+/*!* 优化的继续按钮样式 *!*/
+/*.resume-button {*/
+/*    background: linear-gradient(135deg, #5856d6, #4645b1); !* 苹果风紫色渐变 *!*/
+/*    border: none;*/
+/*    color: white;*/
+/*    width: 60px;*/
+/*    height: 60px;*/
+/*    border-radius: 50%;*/
+/*    font-size: 24px;*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*    cursor: pointer;*/
+/*    transition: all 0.3s ease;*/
+/*    box-shadow: 0 6px 12px rgba(88, 86, 214, 0.3), inset 0 -1px 3px rgba(255, 255, 255, 0.6);*/
+/*    user-select: none;*/
+/*    margin-top: 20px;*/
+/*}*/
+
+/*.resume-button i {*/
+/*    font-size: 20px;*/
+/*    color: white;*/
+/*}*/
+
+/*!* 悬浮和点击效果 *!*/
+/*.resume-button:hover {*/
+/*    background: linear-gradient(135deg, #4645b1, #3a3a9e); !* 深紫渐变 *!*/
+/*    box-shadow: 0 8px 16px rgba(88, 86, 214, 0.4);*/
+/*    transform: scale(1.1);*/
+/*}*/
+
+/*.resume-button:active {*/
+/*    transform: scale(0.95);*/
+/*    box-shadow: 0 4px 8px rgba(88, 86, 214, 0.4), inset 0 -1px 2px rgba(0, 0, 0, 0.2);*/
+/*}*/
+
+/*!* 小屏幕优化 *!*/
+/*@media (max-width: 768px) {*/
+/*    .pause-content {*/
+/*        padding: 20px 30px;*/
+/*        font-size: 20px;*/
+/*    }*/
+
+/*    .resume-button {*/
+/*        width: 50px;*/
+/*        height: 50px;*/
+/*        font-size: 18px;*/
+/*    }*/
+/*}*/
+
+/* 暂停按钮样式 */
+.pause-button {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #007aff, #005ecb);
+    border: none;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 12px rgba(0, 122, 255, 0.3), inset 0 -1px 3px rgba(255, 255, 255, 0.6);
+    z-index: 1000;
+    user-select: none;
+}
+
+/* 使用 FontAwesome 图标替代文字 */
+.pause-button i {
+    font-size: 20px;
+    color: white;
+}
+
+/* 悬浮时的特效 */
+.pause-button:hover {
+    background: linear-gradient(135deg, #005ecb, #0a84ff);
+    transform: translateY(-50%) scale(1.1);
+    filter: brightness(1.1);
+}
+
+/* 点击时的特效 */
+.pause-button:active {
+    transform: translateY(-50%) scale(0.95);
+    box-shadow: 0 4px 8px rgba(0, 122, 255, 0.4), inset 0 -1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* 小屏幕优化 */
+@media (max-width: 768px) {
+    .pause-button {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+        right: 15px;
+    }
+
+    .pause-button i {
+        font-size: 18px;
+    }
+}
+
+/* 遮罩层样式 */
+.pause-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* 更透明的黑色背景 */
+    z-index: 999;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.pause-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+/* 优化的继续按钮样式 */
+.resume-button {
+    background: linear-gradient(135deg, #d1d1d6, #a1a1a6); /* 灰色渐变 */
+    border: none;
+    color: white;
+    width: 150px;
+    height: 150px; /* 增加按钮大小 */
+    border-radius: 50%;
+    font-size: 28px; /* 调整图标大小 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 12px rgba(209, 209, 214, 0.3), inset 0 -1px 3px rgba(255, 255, 255, 0.6);
+    user-select: none;
+    opacity: 0.9; /* 更高透明度与遮罩融合 */
+}
+
+.resume-button i {
+    font-size: 32px;
+    color: white;
+}
+
+/* 悬浮和点击效果 */
+.resume-button:hover {
+    background: linear-gradient(135deg, #b0b0b8, #8f8f99); /* 深灰渐变 */
+    /*box-shadow: 0 8px 16px rgba(209, 209, 214, 0.4);*/
+    transform: scale(1.1);
+}
+
+.resume-button:active {
+    transform: scale(0.95);
+    box-shadow: 0 4px 8px rgba(209, 209, 214, 0.4), inset 0 -1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* 小屏幕优化 */
+@media (max-width: 768px) {
+    .resume-button {
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+    }
+}

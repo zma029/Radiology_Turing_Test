@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey File Browser</title>
+    <!-- 引入样式表 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/manager.css') }}">
+</head>
+
+<body>
+<div class="container">
+
+    <!-- Header 区域 -->
+    <div class="header-container">
+        <!-- 返回上一层按钮 -->
+        <div class="left-action">
+            {% if current_path %}
+                <a href="{{ url_for(endpoint, path='/'.join(current_path.split('/')[:-1]), sort=sort_by, view=view_mode) }}"
+                   class="back-button">← Back</a>
+            {% endif %}
+        </div>
+
+        <!-- 标题 -->
+        <h1 class="header-title">Survey Result Browser</h1>
+
+        <!-- 下载按钮 -->
+        <div class="download-survey">
+            <a href="{{ url_for('download_results', type=endpoint, path=current_path) }}" class="btn-primary">
+                <i class="fas fa-download"></i> Download
+            </a>
+        </div>
+    </div>
+
+    <!-- 视图与排序选项 -->
+    <div class="options">
+        <!-- 视图模式切换 -->
+        <div class="view-options">
+            <a href="{{ url_for(endpoint, path=current_path, sort=sort_by, view='list') }}"
+               class="{{ 'active' if view_mode == 'list' else '' }}">List View</a>
+            <a href="{{ url_for(endpoint, path=current_path, sort=sort_by, view='grid') }}"
+               class="{{ 'active' if view_mode == 'grid' else '' }}">Grid View</a>
+        </div>
+
+        <!-- 排序选项 -->
+        <div class="sort-options">
+            <a href="{{ url_for(endpoint, path=current_path, sort='name', view=view_mode) }}"
+               class="{{ 'active' if sort_by == 'name' else '' }}">Sort by Name</a>
+            <a href="{{ url_for(endpoint, path=current_path, sort='type', view=view_mode) }}"
+               class="{{ 'active' if sort_by == 'type' else '' }}">Sort by Type</a>
+        </div>
+    </div>
+
+    <!-- 文件展示 -->
+    {% if view_mode == 'list' %}
+        <!-- 列表视图 -->
+        <ul class="file-list">
+            {% for item in items %}
+                <li>
+                    <div class="file-name">
+                        <span class="file-icon">
+                            {% if item.is_dir %}
+                                <i class="fas fa-folder" style="color: #007aff; font-size: 24px;"></i>
+                            {% else %}
+                                <i class="fas fa-file-alt" style="color: #6c757d; font-size: 24px;"></i>
+                            {% endif %}
+                        </span>
+                        {% if item.is_dir %}
+                            <a href="{{ url_for(endpoint, path=(current_path + '/' + item.name).strip('/'), sort=sort_by, view=view_mode) }}">
+                                {{ item.name }}
+                            </a>
+                        {% elif item.name.endswith('.jsonl') %}
+                            <a href="{{ url_for('view_jsonl', path=(current_path + '/' + item.name).strip('/')) }}">
+                                {{ item.name }}
+                            </a>
+                        {% elif item.name.endswith('.jpg') %}
+                            <a href="{{ url_for('view_image', path=(current_path + '/' + item.name).strip('/')) }}">
+                                {{ item.name }}
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('download', path=(current_path + '/' + item.name).strip('/')) }}">
+                                {{ item.name }}
+                            </a>
+                        {% endif %}
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% elif view_mode == 'grid' %}
+        <!-- 网格视图 -->
+        <div class="file-grid">
+            {% for item in items %}
+                {% if item.is_dir %}
+                    {% set file_url = url_for(endpoint, path=(current_path + '/' + item.name).strip('/'), sort=sort_by, view=view_mode) %}
+                {% elif item.name.endswith('.jsonl') %}
+                    {% set file_url = url_for('view_jsonl', path=(current_path + '/' + item.name).strip('/')) %}
+                {% elif item.name.endswith('.jpg') %}
+                    {% set file_url = url_for('view_image', path=(current_path + '/' + item.name).strip('/')) %}
+                {% else %}
+                    {% set file_url = url_for('download', path=(current_path + '/' + item.name).strip('/')) %}
+                {% endif %}
+
+                <a href="{{ file_url }}" class="file-card">
+                    <span class="file-icon">
+                        {% if item.is_dir %}
+                            <i class="fas fa-folder" style="color: #007aff; font-size: 48px;"></i>
+                        {% else %}
+                            <i class="fas fa-file-alt" style="color: #6c757d; font-size: 48px;"></i>
+                        {% endif %}
+                    </span>
+                    <span class="file-text">{{ item.name }}</span>
+                </a>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+</body>
+</html>

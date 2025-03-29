@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey Completed</title>
+    <link rel="stylesheet" href="/static/css/general.css">
+    <link rel="stylesheet" href="/static/css/welcome.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/clock.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+</head>
+
+<body>
+<div id="end-container">
+    <div id="welcome-header" style="user-select: none;">
+        <h1>Thank You for Your Participation!</h1>
+        <p class="subtitle">Your responses have been recorded successfully. We truly appreciate your effort in
+            completing this survey.</p>
+    </div>
+
+
+    <div class="end-buttons">
+        <!-- 返回问卷开始按钮 -->
+        <button class="btn-primary" onclick="window.location.href='/'">
+            <i class="fas fa-undo"></i> Return to Start
+        </button>
+
+        <!-- 查看问卷结果按钮 -->
+        <button class="btn-primary" onclick="window.open('/manager', '_blank')">
+            <i class="fas fa-eye"></i> View Survey Results
+        </button>
+
+        <!-- 打包下载按钮 -->
+        <button class="btn-primary" onclick="window.location.href='/download_results'">
+            <i class="fas fa-download"></i> Download Results
+        </button>
+
+    </div>
+</div>
+
+<!-- 引入钟表的 HTML -->
+{% include 'clock.html' %}
+
+</body>
+</html>

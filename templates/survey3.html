@@ -1,0 +1,67 @@
+<div id="survey-container">
+    <h1>X-ray Report Assessment</h1>
+    <hr class="divider">
+
+    <div class="image-container">
+        <img id="xray-image" class="xray-image" src="{{ url_for('static', filename=item['image']) }}" alt="X-ray Image">
+    </div>
+
+    <p class="image-title">
+        <strong>Image name:</strong> <span id="image-name">{{ item['name'] }}</span> &nbsp;
+        <strong>(<span id="current-image-index">0</span> of <span id="total-image-count">0</span>)</strong>
+    </p>
+
+    <hr class="divider">
+
+    <div class="report-container">
+        {% for i in range(2) %}
+            <div class="report-section">
+                <h2 class="report-title">Report {{ i + 1 }}</h2>
+                <div class="report-content">
+                    <p id="report-{{ i + 1 }}-content">{{ item['reports'][i]|safe }}</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <hr class="divider">
+
+    <form id="survey-form">
+        <h2 class="question-title">Which report is AI-generated?</h2>
+        <div class="radio-buttons horizontal">
+            {% for option in ['Report 1 is AI-generated', 'Report 2 is AI-generated', 'Both are AI-generated'] %}
+                <label>
+                    <input type="radio" name="whichAI" value="{{ loop.index }}" required> {{ option }}
+                </label>
+            {% endfor %}
+        </div>
+
+        <h2 class="question-title">Confidence Level</h2>
+        <div class="radio-buttons horizontal">
+            {% for option in ['Confident', 'Somewhat Confident', 'Neutral', 'Somewhat Unconfident', 'Unconfident'] %}
+                <label>
+                    <input type="radio" name="confidence" value="{{ option }}" required> {{ option }}
+                </label>
+            {% endfor %}
+        </div>
+
+        <h2 class="question-title">Which report would you prefer to use?</h2>
+        <div class="radio-buttons horizontal">
+            {% for option in ['Report 1', 'Report 2', 'Both are acceptable'] %}
+                <label>
+                    <input type="radio" name="prefer" value="{{ loop.index }}" required> {{ option }}
+                </label>
+            {% endfor %}
+        </div>
+
+        <button type="button" id="submit-button" class="input-button">Save and Continue</button>
+        <div id="pagination-container"></div>
+    </form>
+</div>
+
+<!-- Zoom Overlay -->
+<div id="zoom-overlay" class="zoom-overlay">
+    <img id="zoomed-image" src="{{ url_for('static', filename=item['image']) }}" alt="Zoomed X-ray Image">
+</div>
+
+<script src="{{ url_for('static', filename='js/survey.js') }}"></script>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Viewer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/manager.css') }}">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #f6f8fa, #e9ecef); /* 柔和渐变背景 */
+            color: #333;
+            min-height: 100vh; /* 确保内容至少覆盖整个视窗高度 */
+        }
+
+        .container {
+            position: relative;
+            max-width: 900px; /* 限制容器宽度 */
+            margin: 50px auto; /* 顶部和底部留白 */
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px); /* 增加苹果风格模糊 */
+            padding: 20px;
+            border-radius: 16px; /* 圆角 */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08); /* 柔和阴影 */
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #007aff; /* 苹果蓝 */
+            margin: 0 0 20px; /* 移除默认外边距并添加底部间距 */
+            text-align: center; /* 标题居中 */
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* 增加标题层次感 */
+        }
+
+        .json-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #333;
+            overflow-x: auto;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 15px;
+        }
+
+        .json-item:last-child {
+            margin-bottom: 0;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin: 0;
+            {#font-family: "Courier New", Courier, monospace; /* JSON 文本使用等宽字体 */#}
+            color: #005bb5; /* 更易于阅读的文本颜色 */
+        }
+
+        a {
+            text-decoration: none;
+            color: #007aff;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .back-button {
+            display: inline-block;
+            font-size: 14px;
+            color: #007aff; /* 苹果蓝 */
+            text-decoration: none;
+            margin: 0 0 20px; /* 与其他内容保持一致 */
+            padding: 6px 12px;
+            background: white;
+            border: 1px solid #007aff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 按钮阴影 */
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease; /* 交互过渡 */
+            cursor: pointer; /* 鼠标变为手型 */
+        }
+
+        .back-button:hover {
+            background-color: #007aff; /* 悬停时背景变为苹果蓝 */
+            color: white; /* 悬停时文字颜色变白 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 悬停时阴影增强 */
+        }
+
+        .back-button:active {
+            background-color: #005bb5; /* 按下时背景颜色更深 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 按下时阴影缩小 */
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <a href="javascript:history.back()" class="back-button">← Back</a> <!-- 顶部返回按钮 -->
+
+    <h1>JSON Viewer</h1>
+    {% for json_line in json_lines %}
+        <div class="json-item">
+            <pre>{{ json_line | tojson(indent=4) }}</pre>
+        </div>
+    {% endfor %}
+
+    <a href="javascript:history.back()">← Back</a> <!-- 底部返回按钮 -->
+</div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+.digital-clock {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 15px;
+    background: linear-gradient(135deg, #f5f5f7, #e6e6e8);
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15), inset 0 1px 4px rgba(255, 255, 255, 0.5);
+    font-family: "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 99;
+    user-select: none;
+}
+
+.time-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.time-part {
+    font-size: 36px;
+    font-weight: 600;
+    color: #333;
+    text-shadow: 0 3px 6px rgba(0, 0, 0, 0.2), 0 0 10px rgba(50, 50, 50, 0.1);
+    margin: 0 3px;
+}
+
+.colon {
+    font-size: 36px;
+    font-weight: 500;
+    color: #888;
+    margin: 0 2px;
+}
+
+.date-display {
+    font-size: 16px; /* 稍小的字体 */
+    color: rgba(90, 90, 90, 0.8); /* 半透明浅灰色 */
+    font-weight: 300; /* 细字体，显得优雅 */
+    text-align: center; /* 日期居中 */
+    margin-top: 10px; /* 增加与时间之间的间距 */
+    letter-spacing: 0.5px; /* 字符间距 */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* 微弱阴影 */
+    font-family: "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif; /* 苹果风字体 */
+}
+
+
+/* 响应式调整（移动端） */
+@media (max-width: 768px) {
+    .date-display {
+        font-size: 14px; /* 在小屏幕上缩小字体 */
+        margin-top: 8px;
+    }
+}

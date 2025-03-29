@@ -1,0 +1,32 @@
+# 忽略 macOS 系统文件
+.DS_Store
+
+# 忽略 Python 缓存
+__pycache__/
+*.pyc
+
+# 忽略临时 trash 文件夹
+trash/
+
+# 忽略所有 PNG 图片
+*.png
+
+# 忽略 VSCode 和 IDEA 工程配置文件
+.vscode/
+.idea/
+
+# 忽略 node_modules 目录
+node_modules/
+
+# 忽略所有可执行文件
+*.exe
+
+# 忽略批处理脚本
+*.bat
+
+# 忽略 PowerShell 脚本
+*.ps1
+
+# 忽略整个 nodejs 文件夹
+nodejs/
+build/

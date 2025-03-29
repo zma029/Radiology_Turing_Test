@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="An online survey with eye-tracking calibration">
+    <meta name="keywords" content="Survey, Eye Tracking, Calibration">
+    <title>Survey</title>
+    <link rel="icon" href="{{ url_for('static', filename='icon/med.ico') }}" type="image/x-icon">
+    <!-- 引入 CSS 样式 -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/calibration.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/survey.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/general.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/clock.css') }}">
+
+    <!-- 引入 JavaScript 文件 -->
+    <script src="{{ url_for('static', filename='js/jquery-3.7.1.slim.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/pagination.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/html2canvas.min.js') }}"></script>
+</head>
+
+<body>
+
+<!-- 校准界面 -->
+{% include 'calibration.html' %}
+
+<!-- 调查问卷界面 -->
+{% include 'questionnaire.html' %}
+
+<!-- 引入钟表的 HTML -->
+{% include 'clock.html' %}
+
+</body>
+</html>

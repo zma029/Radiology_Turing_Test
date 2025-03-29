@@ -1,0 +1,75 @@
+/* 全屏覆盖模态框背景 */
+.modal {
+    position: fixed;
+    inset: 0; /* 覆盖整个页面 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.4); /* 半透明黑色背景 */
+    z-index: 10000; /* 确保覆盖页面其他内容 */
+    transition: opacity 0.5s ease, visibility 0.5s ease; /* 平滑过渡效果 */
+}
+
+/* 模态框内容容器 */
+.modal-content {
+    background: rgba(255, 255, 255, 0.95); /* 苹果风格的半透明白色背景 */
+    padding: 40px 60px;
+    border-radius: 16px; /* 圆角 */
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); /* 柔和阴影 */
+    text-align: center;
+    width: 80%;
+    max-width: 600px;
+    animation: modal_fadeIn 0.5s ease-in-out; /* 弹出动画 */
+}
+
+/* 标题样式 */
+.modal-content h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333; /* 深色标题 */
+    margin-bottom: 20px;
+}
+
+/* 描述文字样式 */
+.modal-content p {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.5;
+    margin-bottom: 30px;
+}
+
+/* 按钮样式 */
+.btn-primary {
+    background-color: #007aff; /* 苹果蓝 */
+    color: white;
+    border: none;
+    border-radius: 12px; /* 更圆的边角 */
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* 按钮阴影 */
+}
+
+.btn-primary:hover {
+    background-color: #005ecb; /* 悬停时颜色变深 */
+    transform: scale(1.05); /* 微小放大 */
+}
+
+.btn-primary:active {
+    background-color: #003f82;
+    transform: scale(0.95); /* 点击时微小缩小 */
+}
+
+/* 弹出动画 */
+@keyframes modal_fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

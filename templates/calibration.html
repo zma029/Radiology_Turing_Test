@@ -1,0 +1,289 @@
+<!-- 遮罩层 -->
+<!--suppress BadExpressionStatementJS -->
+<div id="overlay" class="overlay" style="display: block;"></div>
+
+<!-- 校准指引界面 -->
+<div id="id-calibration-instruction" class="calibration-instruction">
+    <h1>Calibration Instructions</h1>
+    <p class="subtitle" lang="en">
+        <span style="display: block; margin-bottom: 16px;">Hello <span style="color: #007aff; font-weight: bold;">{{ participant_name }}</span>,</span>
+        To better understand your interactions, we will capture both your <strong>eye movements</strong> and <strong>mouse
+            positions</strong>. Please follow the instructions below to calibrate the eye-tracking system.
+    </p>
+
+    <ol>
+        <li><i class="fa fa-camera"></i><strong>Camera Activation: </strong>
+            Please select "Allow" when prompted to enable the camera.
+        </li>
+        <li><i class="fa fa-user"></i><strong>Facial Positioning: </strong>
+            Ensure your face is within the top left video window's frame, which turns green when aligned properly.
+        </li>
+        <li><i class="fa fa-eye"></i><strong>Essential Calibration: </strong>
+            Focus on the cursor and click all blue dots on your screen until they all turn red.
+        </li>
+        <li><i class="fa fa-sync-alt"></i><strong>Further Adjustments: </strong>
+            After calibration, if red dots misalign with your gaze, continue focusing on the cursor and click anywhere
+            to improve calibration accuracy.
+        </li>
+        <li>Current AI algorithms lack multi-view and longitudinal capabilities.
+        </li>
+    </ol>
+    <button id="close-instruction" class="btn-primary">Close Instructions</button>
+</div>
+
+
+<div id="user-info" style="display: none">
+    <!-- Welcome 和 Survey 信息 -->
+    <span class="welcome-text">
+        Welcome, <span style="color: #007aff;">{{ participant_name }}</span>
+    </span>
+    <span class="separator">|</span> <!-- 分隔符 -->
+    <span class="survey-text">
+        Survey: <span style="color: #007aff;">{{ survey_type }}</span>
+    </span>
+</div>
+
+<!-- 操作按钮 -->
+<button id="help-button" class="btn-primary"><i class="fas fa-question-circle"></i>Help</button>
+<a href="{{ url_for('manager') }}" target="_blank">
+    <button id="record-button" class="btn-primary"><i class="fas fa-question-circle"></i>Record</button>
+</a>
+
+{#<button id="heatmap-button" style="display:none;"><i class="fas fa-fire"></i> HeatMap</button>#}
+
+<!-- 校准点容器 -->
+<div id="id-calibration-container" class="calibration-container"></div>
+
+<!-- 全屏热力图弹窗 -->
+<div id="heatmap-overlay" class="overlay">
+    <div class="close-button" id="close-button">×</div>
+    <img id="heatmap-image" class="heatmap-img" src="" alt="Heatmap Image">
+</div>
+
+
+<!-- 校准与眼动追踪脚本 -->
+<script>
+
+    window.OutOfBoundsError = class OutOfBoundsError extends Error {
+        constructor(message) {
+            super(message);
+            this.name = "OutOfBoundsError"; // 错误名称
+        }
+    };
+
+    window.mapPointToRect = function (x, y, rect_zi, rect_i) {
+        // 检查点是否在 rect_zi 范围内
+        if (
+            x < rect_zi.x || x > rect_zi.x + rect_zi.width ||
+            y < rect_zi.y || y > rect_zi.y + rect_zi.height
+        ) {
+            throw new OutOfBoundsError("Point is outside rect_zi region");
+        }
+
+        // 计算点在 rect_zi 中的相对位置
+        const x_rel = (x - rect_zi.x) / rect_zi.width;
+        const y_rel = (y - rect_zi.y) / rect_zi.height;
+
+        // 映射到 rect_i 中的位置
+        const x_mapped = rect_i.x + x_rel * rect_i.width;
+        const y_mapped = rect_i.y + y_rel * rect_i.height;
+
+        return {x: x_mapped, y: y_mapped};
+    }
+
+    window.getAbsoluteBoundingClientRect = function (element) {
+        if (!element) {
+            throw new Error("Element is required");
+        }
+
+        const rect = element.getBoundingClientRect();
+        return {
+            x: rect.x + window.scrollX,
+            y: rect.y + window.scrollY,
+            width: rect.width,
+            height: rect.height,
+            top: rect.top + window.scrollY,
+            right: rect.right + window.scrollX,
+            bottom: rect.bottom + window.scrollY,
+            left: rect.left + window.scrollX
+        };
+    }
+
+    function webgazerLoaded() {
+        async function startEyeTracking() {
+            await webgazer.setRegression('ridge')
+                .setTracker('TFFacemesh')
+                .begin();
+
+            webgazer.showVideoPreview(true)
+                .showPredictionPoints(true)
+                .applyKalmanFilter(true);
+
+            let lastExecutionTime = 0; // 记录上次执行时间
+            const throttleInterval = {{ interval }}; // 设置触发频率为 100 毫秒（即 10 次/秒）
+
+            webgazer.setGazeListener((data, elapsedTime) => {
+                if (!data) return; // Exit if no data is available
+
+                const currentTime = Date.now();
+                if (currentTime - lastExecutionTime < throttleInterval) {
+                    return;
+                }
+                lastExecutionTime = currentTime;
+
+                const isActive = overlay.classList.contains('active');
+
+                let mappedPoint;
+
+                if (isActive) {
+                    // 获取展开图片的最新位置，获取图片的位置和尺寸
+                    const rect_zi = zoomedImage.getBoundingClientRect();
+                    const rect_i_abs = getAbsoluteBoundingClientRect(image);
+                    {#const rect_i = image.getBoundingClientRect();#}
+
+                    try {
+                        mappedPoint = mapPointToRect(data.x, data.y, rect_zi, rect_i_abs);
+                        console.log("Mapped Point:", mappedPoint);
+                    } catch (error) {
+                        if (error instanceof OutOfBoundsError) {
+                            console.error("OutOfBoundsError:", error.message);
+                            return; // 直接退出函数，不运行后续代码
+                        } else {
+                            console.error("Unexpected error:", error.message);
+                            return; // Exit for any other unexpected error
+                        }
+                    }
+                } else {
+                    // Default mapping when overlay is not active
+                    mappedPoint = {x: data.x, y: data.y + window.scrollY};
+                }
+
+                fetch('/eye-data', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        x: mappedPoint.x,
+                        y: mappedPoint.y,
+                        time: Date.now(),
+                        index: document.getElementById('current-image-index').textContent
+                    })
+                }).then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.error('Error:', error));
+
+            });
+        }
+
+        // 先启动眼动追踪
+        startEyeTracking();
+
+        const calibrationContainer = document.getElementById('id-calibration-container');
+        const calibrationInstruction = document.getElementById('id-calibration-instruction');
+        {#const calibrationPoints = [{x: '50%', y: '50%'}];#}
+
+        {#const calibrationPoints = [#}
+        {#    {x: '50%', y: '10%'}, {x: '90%', y: '10%'},#}
+        {#    {x: '10%', y: '50%'}, {x: '50%', y: '50%'}, {x: '90%', y: '50%'},#}
+        {#    {x: '10%', y: '90%'}, {x: '50%', y: '90%'}, {x: '90%', y: '90%'}#}
+        {#];#}
+
+        const calibrationPoints = {% if debug %}
+            [{x: '50%', y: '50%'}];
+        {% else %}
+            [
+                {x: '50%', y: '10%'},
+                {x: '90%', y: '10%'},
+                {x: '10%', y: '50%'},
+                {x: '50%', y: '50%'},
+                {x: '90%', y: '50%'},
+                {x: '10%', y: '90%'},
+                {x: '50%', y: '90%'},
+                {x: '90%', y: '90%'}
+            ];
+        {% endif %}
+
+        // 创建校准点并添加到页面中
+        calibrationPoints.forEach((point, index) => {
+            const calibPoint = document.createElement('div');
+            calibPoint.className = 'calibration-point';
+            calibPoint.style.left = point.x;
+            calibPoint.style.top = point.y;
+            calibPoint.id = `calib-point-${index}`;
+            calibPoint.addEventListener('click', () => handleCalibrationClick(calibPoint));
+            calibrationContainer.appendChild(calibPoint);
+        });
+
+        function handleCalibrationClick(calibPoint) {
+            // 记录点击位置并更改点的颜色
+            webgazer.recordScreenPosition(calibPoint.offsetLeft + calibPoint.offsetWidth / 2, calibPoint.offsetTop + calibPoint.offsetHeight / 2, 'click');
+            calibPoint.style.backgroundColor = '#ff0000'; // 改变颜色为红色表示完成
+            calibPoint.style.pointerEvents = 'none'; // 禁止重复点击
+            checkCompletion()
+        }
+
+        function checkCompletion() {
+            // 如果所有点都被点击了，隐藏校准界面并启动眼动追踪
+            const allCalibrated = Array.from(calibrationContainer.children).every(point => point.style.backgroundColor === 'rgb(255, 0, 0)');
+
+            if (allCalibrated) {
+                // 隐藏小红点
+                document.getElementById("webgazerGazeDot").style.setProperty("background", "transparent", "important");
+                document.getElementById("webgazerGazeDot").style.setProperty("box-shadow", "none", "important");
+
+                // 跳转到第一页后，再开始更改index
+                document.getElementById('current-image-index').textContent = "1";
+
+                // 问卷滚动条显示，并且滚动到最上面
+                document.body.style.overflow = 'auto';  // 显示滚动条
+                window.scrollTo({top: 0, left: 0, behavior: 'instant'});
+
+                // 隐藏上层校准界面
+                calibrationContainer.style.display = 'none';
+                calibrationInstruction.style.display = 'none';
+                console.log("Calibration complete. Starting survey.");
+
+                // 隐藏左上角视频窗口
+                const showPreview = {{ video_preview | tojson }};  // 确保 Flask 传递的布尔值是 JSON 格式
+                webgazer.showVideoPreview(showPreview);
+
+                sendStatusUpdate("start"); // Send pause action to backend
+
+                {#// 向后端发送web操作事件#}
+                {#fetch('/web-data', {#}
+                {#    method: 'POST',#}
+                {#    headers: {'Content-Type': 'application/json'},#}
+                {#    body: JSON.stringify({index: 0, time: Date.now()})#}
+                {#    }).then(response => response.json())#}
+                {#    .then(data => console.log(data))#}
+                {#    .catch(error => console.error('Error:', error));#}
+            }
+        }
+    }
+
+    document.getElementById('close-instruction').addEventListener('click', function () {
+        document.getElementById('id-calibration-instruction').style.display = 'none';
+        document.getElementById('id-calibration-container').style.pointerEvents = 'auto'; // 允许交互
+        document.getElementById('overlay').style.display = 'none';
+        document.getElementById('user-info').style.display = 'block';
+        document.getElementById('help-button').style.display = 'block'; // 显示Help按钮
+        {#document.getElementById('heatmap-button').style.display = 'block'; // 显示Help按钮#}
+        document.getElementById('record-button').style.display = 'block';
+        document.getElementById('pause-button').style.display = 'block';
+    });
+
+    document.getElementById('help-button').addEventListener('click', function () {
+        document.getElementById('id-calibration-instruction').style.display = 'block';
+        document.getElementById('id-calibration-container').style.pointerEvents = 'none'; // 允许交互
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('help-button').style.display = 'none'; // 显示Help按钮
+        document.getElementById('record-button').style.display = 'none';
+        document.getElementById('user-info').style.display = 'none';
+        document.getElementById('pause-button').style.display = 'none';
+    });
+
+
+</script>
+
+<script src="{{ url_for('static', filename='js/webgazer.js') }}" onload="webgazerLoaded()"></script>
+
+
