@@ -149,7 +149,7 @@ If you use this project in academic work, please cite it as:
 
 ```bibteex
 
-@misc{gao2025awesome,
+@misc{ma2025radiology,
   author       = {Zhuoqi, Ma},
   title        = {Radiology Turing Test},
   year         = {2025},
